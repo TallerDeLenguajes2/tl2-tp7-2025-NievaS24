@@ -6,7 +6,7 @@ namespace tl2_tp7_2025_NievaS24.Repository;
 public class ProductoRepository
 {
     private string cadenaConexion = "Data Source=Tienda.db";
-    public Productos Create(Productos producto)
+    public void Create(Productos producto)
     {
         using var con = new SqliteConnection(cadenaConexion);
         con.Open();
@@ -15,6 +15,21 @@ public class ProductoRepository
         cmd.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
         cmd.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
         producto.idProducto = Convert.ToInt32(cmd.ExecuteScalar());
-        return producto;
     }
+
+    public void Update(int id, Productos producto)
+    {
+
+        using var con = new SqliteConnection(cadenaConexion);
+        con.Open();
+        string sql = "UPDATE Productos SET Descripcion = @Descripcion, Precio = @Precio WHERE idProducto = @Id";
+        using var cmd = new SqliteCommand(sql, con);
+        cmd.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
+        cmd.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
+        cmd.Parameters.Add(new SqliteParameter("@Id", id));
+        int modificado = cmd.ExecuteNonQuery();
+        producto.idProducto = id;
+        if (modificado <= 0) throw new KeyNotFoundException($"El producto con id {id} no se encontro");
+    }
+
 }

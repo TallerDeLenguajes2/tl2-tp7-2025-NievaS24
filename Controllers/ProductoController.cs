@@ -17,7 +17,23 @@ public class ProductoController : ControllerBase
     [HttpPost("Productos/Crear")]
     public IActionResult crearProducto([FromBody] Productos productoNuevo)
     {
-        var nuevo = productoRepository.Create(productoNuevo);
-        return Created($"/Productos/{productoNuevo.idProducto}", nuevo);
+        productoRepository.Create(productoNuevo);
+        return Created($"/Productos/{productoNuevo.idProducto}", productoNuevo);
+    }
+
+    [HttpPut("Productos/Modificar")]
+    public IActionResult modificarProducto(int idProd, [FromBody] Productos productoModificado)
+    {
+        try
+        {
+            productoRepository.Update(idProd, productoModificado);
+            return Ok(productoModificado);
+        }
+        catch (KeyNotFoundException e)
+        {
+
+            return NotFound(e.Message);
+        }
+
     }
 }
