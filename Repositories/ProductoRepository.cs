@@ -6,13 +6,15 @@ namespace tl2_tp7_2025_NievaS24.Repository;
 public class ProductoRepository
 {
     private string cadenaConexion = "Data Source=Tienda.db";
-    public void Create(Productos producto) {
-        using var conexion = new SqliteConnection(cadenaConexion);
-        conexion.Open();
-        string sql = "  INSERT INTO Productos (Descripcion, precio) VALUE (@Descripcion, @precio)";
-        using var comando = new SqliteCommand(sql, conexion);
-        comando.Parameters.Add(new SqliteParameter("@Descripcion", producto.descripcion));
-        comando.Parameters.Add(new SqliteParameter("@precio", producto.precio));
-        comando.ExecuteNonQuery();
+    public Productos Create(Productos producto)
+    {
+        using var con = new SqliteConnection(cadenaConexion);
+        con.Open();
+        string sql = "INSERT INTO Productos (Descripcion, Precio) VALUES (@Descripcion, @Precio); SELECT last_insert_rowid();";
+        using var cmd = new SqliteCommand(sql, con);
+        cmd.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
+        cmd.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
+        producto.idProducto = Convert.ToInt32(cmd.ExecuteScalar());
+        return producto;
     }
 }
