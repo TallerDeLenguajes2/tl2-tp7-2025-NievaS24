@@ -4,7 +4,7 @@ public class Presupuestos
 {
     public int idPresupuesto { get; set; }
     public string NombreDestinatario { get; set; }
-    public DateTime FechaCreacion { get; set; }
+    public DateOnly FechaCreacion { get; set; }
     public List<PresupuestosDetalle> detalles { get; set; }
 
     public double MontoPresupuesto()
