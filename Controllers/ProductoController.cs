@@ -5,7 +5,7 @@ using tl2_tp7_2025_NievaS24.Repository;
 namespace tl2_tp7_2025_NievaS24.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ProductoController : ControllerBase
 {
     private ProductoRepository productoRepository;
@@ -14,15 +14,35 @@ public class ProductoController : ControllerBase
         productoRepository = new ProductoRepository();
     }
 
-    [HttpPost("Productos/Crear")]
-    public IActionResult crearProducto([FromBody] Productos productoNuevo)
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        return Ok(productoRepository.GetAll());
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        try
+        {
+            return Ok(productoRepository.GetById(id));
+        }
+        catch (KeyNotFoundException e)
+        {
+
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Create([FromBody] Productos productoNuevo)
     {
         productoRepository.Create(productoNuevo);
         return Created($"/Productos/{productoNuevo.idProducto}", productoNuevo);
     }
 
-    [HttpPut("Productos/Modificar")]
-    public IActionResult modificarProducto(int idProd, [FromBody] Productos productoModificado)
+    [HttpPut("{idProd}")]
+    public IActionResult Update(int idProd, [FromBody] Productos productoModificado)
     {
         try
         {
@@ -36,4 +56,19 @@ public class ProductoController : ControllerBase
         }
 
     }
+
+    [HttpDelete]
+    public IActionResult Delete(int id)
+    {
+        try
+        {
+            productoRepository.Delete(id);
+            return Ok($"El producto {id} se elimino correctamente.");
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
 }
