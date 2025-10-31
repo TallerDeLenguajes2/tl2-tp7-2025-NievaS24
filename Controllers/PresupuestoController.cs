@@ -54,4 +54,18 @@ public class PresupuestoController : ControllerBase
             return NotFound(e.Message);
         }
     }
+
+    [HttpPost("{idPresupuesto}/ProductoDetalle/{idProducto}/{cantidad}")]
+    public IActionResult CreateProd(int idPresupuesto, int idProducto, int cantidad)
+    {
+        try
+        {
+            presupuestosRepository.CreateProd(idPresupuesto, idProducto, cantidad);
+            return Created();
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

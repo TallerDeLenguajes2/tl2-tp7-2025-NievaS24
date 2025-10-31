@@ -107,4 +107,27 @@ public class PresupuestosRepository
         if (modificado <= 0) throw new KeyNotFoundException($"El presupuesto {id} no existe");
         con.Close();
     }
+
+    public void CreateProd(int idPresupuesto, int idProducto, int cant)
+    {
+        using var con = new SqliteConnection(cadenaConexion);
+        con.Open();
+        string sql = "SELECT idPresupuesto FROM Presupuestos WHERE idPresupuesto = @idPresupuesto"; 
+        using var cmd = new SqliteCommand(sql, con);
+        cmd.Parameters.Add(new SqliteParameter("@idPresupuesto", idPresupuesto));
+        using SqliteDataReader reader = cmd.ExecuteReader();
+        if (!reader.Read()) throw new KeyNotFoundException($"El presupuesto {idPresupuesto} no existe");
+        string sql2 = "SELECT idProducto FROM Productos WHERE idProducto = @idProducto"; 
+        using var cmd2 = new SqliteCommand(sql2, con);
+        cmd2.Parameters.Add(new SqliteParameter("@idProducto", idProducto));
+        using SqliteDataReader reader2 = cmd2.ExecuteReader();
+        if (!reader2.Read()) throw new KeyNotFoundException($"El producto {idProducto} no existe");
+        string sql3 = "INSERT INTO PresupuestosDetalle VALUES (@idPresupuesto, @idProducto, @Cantidad);";
+        using var cmd3 = new SqliteCommand(sql3, con);
+        cmd3.Parameters.Add(new SqliteParameter("@idPresupuesto", idPresupuesto));
+        cmd3.Parameters.Add(new SqliteParameter("@idProducto", idProducto));
+        cmd3.Parameters.Add(new SqliteParameter("@Cantidad", cant));
+        cmd3.ExecuteNonQuery();
+        con.Close();
+    }
 }
